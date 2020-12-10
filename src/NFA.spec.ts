@@ -82,21 +82,21 @@ const machineTests: {
 }
 
 for (const [name, testDescription] of Object.entries(machineTests)) {
-    // test(`${name}/constructor`, (t) => {
-    //     const nfa = new NFA(testDescription.description);
-    //     t.truthy(nfa);
-    // });
+    test(`${name}/constructor`, (t) => {
+        const nfa = new NFA(testDescription.description);
+        t.truthy(nfa);
+    });
 
-    // test(`${name}/transition`, (t) => {
-    //     const nfa = new NFA(testDescription.description);
-    //     const { transitions } = testDescription.description;
+    test(`${name}/transition`, (t) => {
+        const nfa = new NFA(testDescription.description);
+        const { transitions } = testDescription.description;
 
-    //     for (const [state, stateTransition] of Object.entries(transitions)) {
-    //         for (const [symbol, nextState] of Object.entries(stateTransition)) {
-    //             t.assert(nextState === nfa.getTransitions(state, symbol));
-    //         }
-    //     }
-    // });
+        for (const [state, stateTransition] of Object.entries(transitions)) {
+            for (const [symbol, nextState] of Object.entries(stateTransition)) {
+                t.assert(nextState === nfa.getTransitions(state, symbol));
+            }
+        }
+    });
 
     test(`${name}/accept`, (t) => {
         const nfa = new NFA(testDescription.description);
@@ -106,7 +106,7 @@ for (const [name, testDescription] of Object.entries(machineTests)) {
             console.log("Testing String: " + s);
             console.log("-------------------------");
             t.assert(nfa.accepts(s, 'S'));
-            console.log("   PASS    ");
+            console.log("String \"" + s + "\" is accepted by the NFA!");
             console.log(" ");
         }
 
@@ -114,7 +114,7 @@ for (const [name, testDescription] of Object.entries(machineTests)) {
             console.log("Testing String: " + s);
             console.log("-------------------------");
             t.assert(!nfa.accepts(s, 'S'));
-            console.log("   PASS    ");
+            console.log("String \"" + s + "\" is rejected by the NFA!");
             console.log(" ");
         }
     });

@@ -33,12 +33,9 @@ export default class NFA {
     }
 
     handleLambda(s:string, state:string): boolean {
-        console.log("lambda string: " + s + " lambda state: " + state);
         const transitions = this.getTransitions(state, 'lambda');
-        console.log("Lambda transitions: " + transitions);
 
         for (let element in transitions) {
-            console.log("lambda string: " + s + " lambda element: " + transitions[element]);
             if (this.accepts(s, transitions[element])) {
                 return true;
             }
@@ -49,8 +46,6 @@ export default class NFA {
 
     accepts(s: string, state: string): boolean {
         s = s.trim();
-        console.log("this.accept string: " + s);
-        console.log("this.accept state: " + state);
         const { description: { acceptStates, statesWithLambda } } = this;
 
         // Base case
@@ -58,9 +53,7 @@ export default class NFA {
             return true;
         }
 
-        console.log("this.accept state: " + state + " s.charAt(0): " + s.charAt(0));
         const nextStates = this.getTransitions(state, s.charAt(0));
-        console.log("nextStates: " + nextStates);
 
         if (!nextStates.includes('-1')) {
             // handle regular transitions
@@ -73,7 +66,6 @@ export default class NFA {
 
         // check for lambda and handle lambda
         if (statesWithLambda.includes(state)) {
-            console.log("Handling Lambda: ---------------");
             return this.handleLambda(s, state);
         }
 
