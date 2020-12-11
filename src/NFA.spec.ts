@@ -158,6 +158,43 @@ const machineTests: {
             statesWithLambda: ['A'],
         }
     },
+    // Test from Question 3, Exam 2
+    test_2: {
+        // Add your accepted strings here
+        accepted: [
+            '0010',
+            '010',
+            '10',
+            '00010',
+            '000010'
+        ],
+        // Add any rejected strings you want checked here
+        rejected: [
+            ' ',
+            '100',
+            '101',
+            '0000101'
+        ],
+        // Build your NFA here; for a lambda move, use "lambda"
+        description: {
+            transitions: {
+                A: {
+                    lambda: ['B'],
+                    0: 'B',
+                    1: 'C',
+                },
+                B: {
+                    0: 'A',
+                },
+                C: {
+                    0: 'D',
+                },
+            },
+            start: 'A',
+            acceptStates: ['D'],
+            statesWithLambda: ['A'],
+        }
+    },
 }
 
 for (const [name, testDescription] of Object.entries(machineTests)) {
