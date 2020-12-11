@@ -45,6 +45,7 @@ const machineTests: {
             statesWithLambda: ['S'],
         }
     },
+    // accepts 1(1+0)*0
     acceptRegex: {
         // Add your accepted strings here
         accepted: [
@@ -123,6 +124,40 @@ const machineTests: {
             statesWithLambda: ['E'],
         }
     },
+    // NFA for 101 or lambda
+    test_1: {
+        // Add your accepted strings here
+        accepted: [
+            '101',
+            ' ',
+        ],
+        // Add any rejected strings you want checked here
+        rejected: [
+            '00000',
+            '00101010',
+            '0000000',
+            '1010',
+            '1011'
+        ],
+        // Build your NFA here; for a lambda move, use "lambda"
+        description: {
+            transitions: {
+                A: {
+                    lambda: ['D'],
+                    1: 'B'
+                },
+                B: {
+                    0: 'C',
+                },
+                C: {
+                    1: 'D',
+                },
+            },
+            start: 'A',
+            acceptStates: ['D'],
+            statesWithLambda: ['A'],
+        }
+    },
 }
 
 for (const [name, testDescription] of Object.entries(machineTests)) {
@@ -157,9 +192,11 @@ for (const [name, testDescription] of Object.entries(machineTests)) {
         console.log("Testing Reject " + `${name}`);
         console.log("-------------------------");
         for (const s of rejected) {
-            console.log("Testing String: " + s);
+            console.log("Testing String: \" " + s + " \"");
             console.log("-------------------------");
             t.assert(!nfa.accepts(s, start));
         }
+        console.log();
+        console.log();
     });
 }

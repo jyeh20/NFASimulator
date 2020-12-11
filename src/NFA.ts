@@ -51,7 +51,7 @@ export default class NFA {
 
         // Base case
         if(s.length == 0 && acceptStates.includes(state)) {
-            console.log("String \"" + s + "\" is accepted by the NFA!");
+            console.log("String is accepted by the NFA!");
             console.log(" ");
             return true;
         }
