@@ -9,6 +9,7 @@ export interface NFADescription {
 
         }
     },
+    start: string,
     acceptStates: string[],
     statesWithLambda: string[],
 }
@@ -50,25 +51,28 @@ export default class NFA {
 
         // Base case
         if(s.length == 0 && acceptStates.includes(state)) {
+            console.log("String \"" + s + "\" is accepted by the NFA!");
+            console.log(" ");
             return true;
         }
 
-        const nextStates = this.getTransitions(state, s.charAt(0));
+        else {
+            const nextStates = this.getTransitions(state, s.charAt(0));
 
-        if (!nextStates.includes('-1')) {
-            // handle regular transitions
-            for (let element in nextStates) {
-                if (this.accepts(s.substr(1), nextStates[element])) {
-                    return true;
+            if (!nextStates.includes('-1')) {
+                // handle regular transitions
+                for (let element in nextStates) {
+                    if (this.accepts(s.substr(1), nextStates[element])) {
+                        return true;
+                    }
                 }
             }
-        }
 
-        // check for lambda and handle lambda
-        if (statesWithLambda.includes(state)) {
-            return this.handleLambda(s, state);
+            // check for lambda and handle lambda
+            if (statesWithLambda.includes(state)) {
+                return this.handleLambda(s, state);
+            }
         }
-
 
         return false;
     }

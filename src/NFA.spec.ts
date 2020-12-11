@@ -40,6 +40,7 @@ const machineTests: {
                     1: 'F',
                 },
             },
+            start: 'S',
             acceptStates: ['D', 'F'],
             statesWithLambda: ['S'],
         }
@@ -75,8 +76,51 @@ const machineTests: {
                     1: 'C',
                 },
             },
+            start: 'S',
             acceptStates: ['B', 'D'],
             statesWithLambda: ['S'],
+        }
+    },
+    nfaFromExam2: {
+        // Add your accepted strings here
+        accepted: [
+            '0001',
+            '0010101010101',
+            '00101010101010001',
+            '001010101010100010010101010101',
+            '00101'
+        ],
+        // Add any rejected strings you want checked here
+        rejected: [
+            '00000',
+            '00101010',
+            '0000000',
+            ' ',
+            '1'
+        ],
+        // Build your NFA here; for a lambda move, use "lambda"
+        description: {
+            transitions: {
+                A: {
+                    0: 'B'
+                },
+                B: {
+                    0: 'C',
+                },
+                C: {
+                    0: ['C', 'D'],
+                    1: 'C',
+                },
+                D: {
+                    1: 'E',
+                },
+                E: {
+                    lambda: 'A'
+                }
+            },
+            start: 'A',
+            acceptStates: ['E'],
+            statesWithLambda: ['E'],
         }
     },
 }
@@ -100,22 +144,22 @@ for (const [name, testDescription] of Object.entries(machineTests)) {
 
     test(`${name}/accept`, (t) => {
         const nfa = new NFA(testDescription.description);
-        const { accepted, rejected } = testDescription;
+        const { description: {start}, accepted, rejected } = testDescription;
 
+        console.log("Testing Accept " + `${name}`);
+        console.log("-------------------------");
         for (const s of accepted) {
             console.log("Testing String: " + s);
             console.log("-------------------------");
-            t.assert(nfa.accepts(s, 'S'));
-            console.log("String \"" + s + "\" is accepted by the NFA!");
-            console.log(" ");
+            t.assert(nfa.accepts(s, start));
         }
 
+        console.log("Testing Reject " + `${name}`);
+        console.log("-------------------------");
         for (const s of rejected) {
             console.log("Testing String: " + s);
             console.log("-------------------------");
-            t.assert(!nfa.accepts(s, 'S'));
-            console.log("String \"" + s + "\" is rejected by the NFA!");
-            console.log(" ");
+            t.assert(!nfa.accepts(s, start));
         }
     });
 }
