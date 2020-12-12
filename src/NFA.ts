@@ -33,19 +33,30 @@ export default class NFA {
         return transition;
     }
 
-    handleLambda(s:string, state:string): boolean {
+    handleLambda(s:string, state:string, checked:string[]): boolean {
+        const { description: { statesWithLambda } } = this;
         const transitions = this.getTransitions(state, 'lambda');
 
         for (let element in transitions) {
-            if (this.accepts(s, transitions[element])) {
-                return true;
+            let currentState = transitions[element];
+            if (checked.includes(currentState)) {
+                continue;
+            }
+            else {
+                if (this.accepts(s, currentState, checked)) {
+                    return true;
+                }
+                if(statesWithLambda.includes(currentState)) {
+                    checked.push(currentState);
+                    this.handleLambda(s, currentState, checked);
+                }
             }
         }
 
         return false;
     }
 
-    accepts(s: string, state: string): boolean {
+    accepts(s: string, state: string, checked: string[]): boolean {
         s = s.trim();
         const { description: { acceptStates, statesWithLambda } } = this;
 
@@ -55,6 +66,11 @@ export default class NFA {
             console.log(" ");
             return true;
         }
+        if(s.length == 0 && !acceptStates.includes(state) && !statesWithLambda.includes(state)) {
+            console.log("String is rejected by the NFA!");
+            console.log(" ");
+            return false;
+        }
 
         else {
             const nextStates = this.getTransitions(state, s.charAt(0));
@@ -62,7 +78,8 @@ export default class NFA {
             if (!nextStates.includes('-1')) {
                 // handle regular transitions
                 for (let element in nextStates) {
-                    if (this.accepts(s.substr(1), nextStates[element])) {
+                    let currentState = nextStates[element]
+                    if (this.accepts(s.substr(1), currentState, checked)) {
                         return true;
                     }
                 }
@@ -70,7 +87,8 @@ export default class NFA {
 
             // check for lambda and handle lambda
             if (statesWithLambda.includes(state)) {
-                return this.handleLambda(s, state);
+                checked.push(state);
+                return this.handleLambda(s, state, checked);
             }
         }
 

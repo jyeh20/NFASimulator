@@ -158,6 +158,42 @@ const machineTests: {
             statesWithLambda: ['A'],
         }
     },
+    // Tests an NFA with a lambda loop in it
+    lambdaLoop: {
+        // Add your accepted strings here
+        accepted: [
+            '01',
+            '00',
+        ],
+        // Add any rejected strings you want checked here
+        rejected: [
+            ' ',
+            '100',
+            '101',
+            '011',
+            '0',
+            '1'
+        ],
+        // Build your NFA here; for a lambda move, use "lambda"
+        description: {
+            transitions: {
+                S: {
+                    0: 'A',
+                },
+                A: {
+                    lambda: 'B',
+                    1: 'C',
+                },
+                B: {
+                    lambda: 'A',
+                    0: 'C',
+                },
+            },
+            start: 'S',
+            acceptStates: ['C'],
+            statesWithLambda: ['A', 'B'],
+        }
+    },
     // Test from Question 3, Exam 2
     test_2: {
         // Add your accepted strings here
@@ -223,7 +259,7 @@ for (const [name, testDescription] of Object.entries(machineTests)) {
         for (const s of accepted) {
             console.log("Testing String: " + s);
             console.log("-------------------------");
-            t.assert(nfa.accepts(s, start));
+            t.assert(nfa.accepts(s, start, new Array()));
         }
 
         console.log("Testing Reject " + `${name}`);
@@ -231,7 +267,7 @@ for (const [name, testDescription] of Object.entries(machineTests)) {
         for (const s of rejected) {
             console.log("Testing String: \" " + s + " \"");
             console.log("-------------------------");
-            t.assert(!nfa.accepts(s, start));
+            t.assert(!nfa.accepts(s, start, new Array()));
         }
         console.log();
         console.log();
